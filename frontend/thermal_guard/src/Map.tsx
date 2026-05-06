@@ -8,6 +8,7 @@ import {
 } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import { type SafePoint } from "./api";
+import { memo } from "react";
 
 function MapUpdater({ center }: { center: [number, number] }) {
   const map = useMap();
@@ -22,7 +23,7 @@ interface MapProps {
   points: SafePoint[];
 }
 
-export default function Map({ center, points }: MapProps) {
+function Map({ center, points }: MapProps) {
   const centerPosition: [number, number] = [center.lat, center.lon];
 
   return (
@@ -79,3 +80,5 @@ export default function Map({ center, points }: MapProps) {
     </MapContainer>
   );
 }
+
+export default memo(Map);
