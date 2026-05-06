@@ -27,6 +27,7 @@ function Map({ center, points }: MapProps) {
   const centerPosition: [number, number] = [center.lat, center.lon];
 
   return (
+    <div className="map-wrapper">
     <MapContainer
       center={centerPosition}
       zoom={14}
@@ -57,7 +58,7 @@ function Map({ center, points }: MapProps) {
 
       {points.map((point) => {
         const isGold = point.safety_category === "GOLD";
-        const dotColor = isGold ? "#f59e0b" : "#10b981";
+        const dotColor = isGold ? "#f59e0b" : "#94a3b8";
 
         return (
           <CircleMarker
@@ -78,6 +79,21 @@ function Map({ center, points }: MapProps) {
         );
       })}
     </MapContainer>
+    <div className="map-legend">
+        <div className="map-legend-title">Legend</div>
+
+        <div className="map-legend-item">
+          <span className="legend-dot gold"></span>
+          <span><strong>GOLD:</strong> Climate controlled (POP/Fridge)</span>
+        </div>
+
+        <div className="map-legend-item">
+          <span className="legend-dot silver"></span>
+          <span><strong>SILVER:</strong> Safe (Indoor or Good Weather)</span>
+        </div>
+      </div>
+
+    </div>
   );
 }
 
