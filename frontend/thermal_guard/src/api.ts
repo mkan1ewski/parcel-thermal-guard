@@ -13,6 +13,7 @@ export interface SafePoint {
     longitude: number;
     safety_category: "GOLD" | "SILVER" | "DANGER" | "UNKNOWN";
     location_type: string;
+    distance_meters: number
 }
 
 export interface Metadata {

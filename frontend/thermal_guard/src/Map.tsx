@@ -74,6 +74,7 @@ function Map({ center, points }: MapProps) {
             <Popup>
               <strong>{point.id}</strong> {isGold && "⭐"} <br />
               {point.address.street} {point.address.building_number} <br />
+              Distance: {point.distance_meters} m <br />
             </Popup>
           </CircleMarker>
         );
