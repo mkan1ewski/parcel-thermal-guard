@@ -82,7 +82,7 @@ To run this project, you only need:
 
 ```bash
 git clone https://github.com/mkan1ewski/parcel-thermal-guard
-cd parcel_thermal_guard
+cd parcel-thermal-guard
 
 docker compose up --build -d
 
