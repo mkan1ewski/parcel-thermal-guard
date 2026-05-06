@@ -93,7 +93,7 @@ export default function App() {
       <aside className="sidebar">
         <div className="header">
           <ShieldCheck size={32} color="#10b981" />
-          <h1>Thermal Shield 🥵🥶 </h1>
+          <h1>Thermal Guard 🥵🥶 </h1>
         </div>
         <p className="subtitle">Protect your parcels from extreme weather.</p>
 
