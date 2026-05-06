@@ -1,5 +1,6 @@
 import httpx
 from typing import Any
+from geopy.distance import geodesic
 
 
 class InpostClient:
@@ -14,9 +15,9 @@ class InpostClient:
         self, latitude: float, longitude: float, radius_meters: int = 1500
     ) -> list[dict[str, Any]]:
         """
-        Retrieves InPost points within a strict physical radius from a specific GPS coordinate.
+        Retrieves InPost points and filters them by physical distance.
         """
-        all_points = []
+        valid_points = []
         current_page = 1
         total_pages = 1
 
@@ -24,7 +25,6 @@ class InpostClient:
             while current_page <= total_pages:
                 params = {
                     "relative_point": f"{latitude},{longitude}",
-                    "relative_distance": radius_meters,
                     "per_page": 100,
                     "page": current_page,
                 }
@@ -32,11 +32,28 @@ class InpostClient:
                 response = await client.get(self.base_url, params=params)
                 if response.status_code != 200:
                     break
+
                 data = response.json()
-                all_points.extend(data.get("items", []))
+                items = data.get("items", [])
+
+                for point in items:
+                    p_lat = point.get("location", {}).get("latitude")
+                    p_lon = point.get("location", {}).get("longitude")
+
+                    if p_lat and p_lon:
+                        distance = geodesic(
+                            (latitude, longitude), (p_lat, p_lon)
+                        ).meters
+
+                        if distance <= radius_meters:
+                            point["distance_meters"] = round(distance)
+                            valid_points.append(point)
+                        else:
+                            return valid_points
 
                 if current_page == 1:
                     total_pages = data.get("total_pages", 1)
+
                 current_page += 1
 
-        return all_points
+        return valid_points
