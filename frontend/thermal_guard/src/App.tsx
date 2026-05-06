@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { fetchSafePoints, type ThermalApiResponse } from "./api";
+import Map from "./Map";
 import {
   MapPin,
   Search,
@@ -149,7 +150,13 @@ export default function App() {
       </aside>
 
       <main className="map-area">
-        <div className="map-placeholder"></div>
+        {apiData ? (
+          <Map center={apiData.metadata.coordinates} points={apiData.points} />
+        ) : (
+          <div className="map-placeholder">
+            Enter an address and click Search.
+          </div>
+        )}
       </main>
     </div>
   );
