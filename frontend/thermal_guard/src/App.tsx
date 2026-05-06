@@ -7,6 +7,7 @@ import {
   Thermometer,
   ShieldCheck,
   Calendar,
+  LocateFixed,
 } from "lucide-react";
 import "./App.css";
 
@@ -20,6 +21,53 @@ export default function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [apiData, setApiData] = useState<ThermalApiResponse | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+
+  const handleGeolocation = () => {
+    if (!navigator.geolocation) {
+      setErrorMsg("Geolocation is not supported by your browser.");
+      return;
+    }
+
+    setIsLoading(true);
+    setErrorMsg(null);
+
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const { latitude, longitude } = position.coords;
+        try {
+          const response = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&addressdetails=1`,
+          );
+          const data = await response.json();
+
+          if (data && data.address) {
+            const street = data.address.road || "";
+            const houseNumber = data.address.house_number || "";
+            const city =
+              data.address.city ||
+              data.address.town ||
+              data.address.village ||
+              "";
+
+            const cleanPart1 = [street, houseNumber].filter(Boolean).join(" ");
+            const cleanAddress = [cleanPart1, city].filter(Boolean).join(", ");
+
+            setSearchAddress(cleanAddress || data.display_name);
+          } else {
+            setSearchAddress(`${latitude}, ${longitude}`);
+          }
+        } catch (err) {
+          setErrorMsg("Failed to translate GPS coordinates to address.");
+        } finally {
+          setIsLoading(false);
+        }
+      },
+      (_) => {
+        setIsLoading(false);
+        setErrorMsg("Please allow location permissions in your browser.");
+      },
+    );
+  };
 
   const handleSearch = async () => {
     setIsLoading(true);
@@ -50,9 +98,19 @@ export default function App() {
         <p className="subtitle">Protect your parcels from extreme weather.</p>
 
         <div className="input-group">
-          <label>
-            <MapPin size={16} /> Address
-          </label>
+          <div className="address-header">
+            <label>
+              <MapPin size={16} /> Address
+            </label>
+            <button
+              className="locate-btn"
+              onClick={handleGeolocation}
+              disabled={isLoading}
+              title="Locate Me"
+            >
+              <LocateFixed size={16} /> My Location
+            </button>
+          </div>
           <input
             type="text"
             value={searchAddress}

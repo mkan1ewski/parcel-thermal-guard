@@ -127,7 +127,6 @@ body {
   font-size: 1.2rem;
 }
 
-
 .map-wrapper {
   position: relative;
   height: 100%;
@@ -176,4 +175,33 @@ body {
 
 .legend-dot.silver {
   background-color: #94a3b8;
+}
+
+.address-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.locate-btn {
+  background: none;
+  border: none;
+  color: #3b82f6;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  padding: 0;
+  transition: color 0.2s;
+}
+
+.locate-btn:hover:not(:disabled) {
+  color: #2563eb;
+}
+
+.locate-btn:disabled {
+  color: #9ca3af;
+  cursor: not-allowed;
 }
